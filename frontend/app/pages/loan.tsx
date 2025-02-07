@@ -48,9 +48,16 @@ export default function LoanForm({
     e.preventDefault();
     try {
       if (editingLoan) {
-        await onUpdate({ ...editingLoan, ...formData, amount: parseFloat(formData.amount) });
+        await onUpdate({
+          ...editingLoan,
+          ...formData,
+          amount: parseFloat(formData.amount),
+        });
       } else {
-        await axios.post("http://localhost:5000/api/loans", formData);
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/api/loans`,
+          formData
+        );
         toaster.create({
           description: "Loan created successfully",
           type: "success",
@@ -96,7 +103,7 @@ export default function LoanForm({
             onChange={handleChange}
             placeholder="Enter customer name"
             required
-            className="w-full px-3 py-2 border bg-gray-100 text-black  rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border bg-gray-100 text-black rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 

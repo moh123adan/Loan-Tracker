@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
 import axios from "axios";
 import { toaster } from "@/components/ui/toaster";
 
@@ -29,10 +29,26 @@ export default function LoanForm({
   onUpdate,
 }: LoanFormProps) {
   const [formData, setFormData] = useState<FormData>({
-    customerName: editingLoan?.customerName || "",
-    amount: editingLoan?.amount.toString() || "",
-    status: editingLoan?.status || "pending",
+    customerName: "",
+    amount: "",
+    status: "pending",
   });
+
+  useEffect(() => {
+    if (editingLoan) {
+      setFormData({
+        customerName: editingLoan.customerName,
+        amount: editingLoan.amount.toString(),
+        status: editingLoan.status,
+      });
+    } else {
+      setFormData({
+        customerName: "",
+        amount: "",
+        status: "pending",
+      });
+    }
+  }, [editingLoan]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -51,7 +67,7 @@ export default function LoanForm({
         await onUpdate({
           ...editingLoan,
           ...formData,
-          amount: parseFloat(formData.amount),
+          amount: Number.parseFloat(formData.amount),
         });
       } else {
         await axios.post(

@@ -1,78 +1,71 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import axios from "axios";
-import LoanForm from "./loan";
-import { toaster } from "@/components/ui/toaster";
+import { useState, useEffect } from "react"
+import axios from "axios"
+import { toaster } from "@/components/ui/toaster"
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import LoanForm from "./loan";
+
 
 interface Loan {
-  _id: string;
-  customerName: string;
-  amount: number;
-  status: string;
+  _id: string
+  customerName: string
+  amount: number
+  status: string
 }
 
 export default function Dashboard() {
-  const [loans, setLoans] = useState<Loan[]>([]);
-  const [editingLoan, setEditingLoan] = useState<Loan | null>(null);
+  const [loans, setLoans] = useState<Loan[]>([])
+  const [editingLoan, setEditingLoan] = useState<Loan | null>(null)
 
   useEffect(() => {
-    fetchLoans();
-  }, []);
+    fetchLoans()
+  }, [])
 
   const fetchLoans = async () => {
     try {
-      const response = await axios.get<Loan[]>(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/api/loans`
-      );
-      setLoans(response.data);
+      const response = await axios.get<Loan[]>(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/api/loans`)
+      setLoans(response.data)
     } catch (error) {
       toaster.create({
-        description:
-          error instanceof Error ? error.message : "Unknown error occurred",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         type: "error",
-      });
+      })
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`NEXT_PUBLIC_BACKEND_BASEURL/api/loans/${id}`);
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/api/loans/${id}`)
       toaster.create({
         description: "Loan deleted successfully",
         type: "success",
-      });
-      fetchLoans();
+      })
+      fetchLoans()
     } catch (error) {
       toaster.create({
-        description:
-          error instanceof Error ? error.message : "Unknown error occurred",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         type: "error",
-      });
+      })
     }
-  };
+  }
 
   const handleUpdate = async (loan: Loan) => {
     try {
-      await axios.put(
-        `NEXT_PUBLIC_BACKEND_BASEURL/api/loans/${loan._id}`,
-        loan
-      );
+      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/api/loans/${loan._id}`, loan)
       toaster.create({
         description: "Loan updated successfully",
         type: "success",
-      });
-      setEditingLoan(null);
-      fetchLoans();
+      })
+      setEditingLoan(null)
+      fetchLoans()
     } catch (error) {
       toaster.create({
-        description:
-          error instanceof Error ? error.message : "Unknown error occurred",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         type: "error",
-      });
+      })
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">

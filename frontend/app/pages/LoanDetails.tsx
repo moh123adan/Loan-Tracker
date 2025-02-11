@@ -4,7 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Payment } from "../types";
+import type { Payment } from "@/app/types/index";
 
 interface LoanDetailsProps {
   isOpen: boolean;

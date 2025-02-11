@@ -20,12 +20,30 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-connectDB();
+// Connect to database
+connectDB().catch((err) =>
+  console.error("Failed to connect to database:", err)
+);
+
 app.use("/api/loans", loanRoutes);
 app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Loan Management System API" });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "An unexpected error occurred",
+    error: process.env.NODE_ENV === "production" ? {} : err,
+  });
+});
+
+// Handle 404 errors
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
 app.listen(PORT, () => {

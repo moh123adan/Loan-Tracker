@@ -10,8 +10,8 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import type { User, Loan } from "../types/index";
-import { LoanDetails } from "./LoanDetails";
+import type { User, Loan } from "../../types/index";
+import { LoanDetails } from "../LoanDetails";
 
 export default function Dashboard() {
   const [loans, setLoans] = useState<Loan[]>([]);

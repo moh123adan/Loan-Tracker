@@ -11,14 +11,39 @@ const app = express()
 
 const PORT = process.env.PORT || 5000
 
+// Update CORS configuration to handle multiple origins
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+  "https://loan-tracker-five.vercel.app",
+  // Add any other domains you need
+];
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  optionsSuccessStatus: 200,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }
 
 app.use(cors(corsOptions))
 
 app.use(express.json())
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something broke!',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
+});
 
 connectDB()
 app.use("/api/loans", loanRoutes)
@@ -31,4 +56,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
 })
-

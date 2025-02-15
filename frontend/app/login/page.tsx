@@ -31,9 +31,11 @@ export default function Login() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, // Important for CORS with credentials
+          withCredentials: true,
         }
       );
+
+      console.log("Login response:", response.data);
 
       if (!response.data.token) {
         throw new Error("No token received from server");
@@ -53,6 +55,7 @@ export default function Login() {
 
       let errorMessage = "Login failed";
       if (axios.isAxiosError(error)) {
+        console.log("Axios error response:", error.response?.data);
         errorMessage = error.response?.data?.message || error.message;
       } else if (error instanceof Error) {
         errorMessage = error.message;

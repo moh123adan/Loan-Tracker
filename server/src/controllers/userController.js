@@ -32,6 +32,15 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    console.log(
+      "JWT_SECRET:",
+      process.env.JWT_SECRET ? "is set" : "is NOT set"
+    );
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
@@ -45,8 +54,6 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    // In a stateless JWT system, we don't need to do anything server-side
-    // The client will remove the token
     res.json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error:", error);
